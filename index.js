@@ -156,7 +156,7 @@ async function postData(url = '', data = {}) {
             method: 'DELETE', 
           });
      })
-    
+    loadItems();
     
   }
   async function updateData(url = '', data = {}) {
