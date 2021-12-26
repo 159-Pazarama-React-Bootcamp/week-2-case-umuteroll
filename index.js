@@ -6,16 +6,17 @@ const taskList      = document.querySelector("#task-list");
 btnAddNewTask.addEventListener("click",addNewItem); // add an item 
 taskList.addEventListener("click",manipulateItem); // delete only one item
 btnDeleteAll.addEventListener("click",deleteAllFromAPI) // delete all items
-
-onInit();
 var arrResults;
+
+
+onInit(); //inital function that sets task and username 
 
 function onInit(){
  setUsername();
- changeTheme();
  loadItems();
  }
 
+ // get username from localstorage
 function setUsername(){
     var username  = localStorage.getItem("username");
     if(!username){
@@ -26,11 +27,14 @@ function setUsername(){
         header.innerText = username + "'s TODO APP"
     
 }
+//dark mode function
 function changeTheme(){
     var element = document.body
     element.classList.toggle("darkmode")
-    //localStorage.setItem('items',JSON.stringify(items));
+    
 }
+
+//get tasks from the api and call createElement for eevery function
   async function loadItems(){
     deleteFromTaskList();
    await getItemsFromAPI();
@@ -40,6 +44,7 @@ function changeTheme(){
   })
 }
 
+// this functions helps delete and update the task its spaggetti code need to be fix
 function manipulateItem(e){
     var target  = e.target.parentElement;
     var idValue =  target.value;
@@ -60,14 +65,12 @@ function manipulateItem(e){
     inputElement.setAttribute("id","updateInput");
     
     siblings.parentElement.appendChild(inputElement)
-    siblings.parentElement.firstChild.remove();
-    
-
-   
+    siblings.parentElement.firstChild.remove();   
 }
 
-
 }
+/*
+TODO: fix this method
 function updateInput(id){
     const updateInput   = document.getElementById("updateInput")
     const newValue      = updateInput.value;
@@ -75,7 +78,9 @@ function updateInput(id){
 updateData("https://61c4a152f1af4a0017d996eb.mockapi.io/todos/"+id,newValue);
  }
 }
+*/
 
+// triggered with button its posts data to api 
 function addNewItem(e){
 const input = document.querySelector("#txtTaskName").value;
 if(input.length < 3){
@@ -85,21 +90,22 @@ if(input.length < 3){
     postData("https://61c4a152f1af4a0017d996eb.mockapi.io/todos",{content: input});
 }
 
-function createElement(input,input2) {
+// static html content to ul tag 
+function createElement(text,id) {
     const li = document.createElement("li");
     li.className= 'list-group-item list-group-item-secondary';
  
-    li.appendChild(document.createTextNode(input));
+    li.appendChild(document.createTextNode(text));
     
  
     const deleteButton = document.createElement("button");
     deleteButton.className = "delete-item float-right";
-    deleteButton.setAttribute("value",input2);
+    deleteButton.setAttribute("value",id);
     deleteButton.innerHTML = '<i class="fas fa-times"></i>';
 
     const updateButton = document.createElement("button");
     updateButton.className = "update-item float-right mr-2" ;
-    updateButton.setAttribute("value",input2);
+    updateButton.setAttribute("value",id);
     updateButton.innerHTML = '<i class="fas fa-pen"></i>';
 
   
@@ -107,27 +113,15 @@ function createElement(input,input2) {
     li.appendChild(updateButton);
     taskList.appendChild(li);
 }
+
+//deelete task from ul tag
 function deleteFromTaskList(){
     taskList.innerHTML = "";
 }
-/*
-function postItemToAPI(input){
-    fetch('https://61c4a152f1af4a0017d996eb.mockapi.io/todos', {
-        method: 'POST',
-       body: {
-           "content": input}
-      }).then(response => {
-        if(response.ok){
-            return response.json();  
-        }
-          throw new Error('Request failed!');
-      }, networkError => {
-        console.log(networkError.message);
-      }).then(jsonResponse => {
-        console.log(jsonResponse);
-      })
 
-} */
+//                               ------------------------ API----------------
+
+
 
 async function postData(url = '', data = {}) {
     // Default options are marked with *
@@ -147,6 +141,7 @@ async function postData(url = '', data = {}) {
     });
     
   }
+  //it remove all tasks from api triggeer with delete all button
    function deleteAllFromAPI() {
       var url ="https://61c4a152f1af4a0017d996eb.mockapi.io/todos/"
       var id = ""
@@ -159,6 +154,8 @@ async function postData(url = '', data = {}) {
     loadItems();
     
   }
+
+  //its update tasks
   async function updateData(url = '', data = {}) {
     // Default options are marked with *
     const response = await fetch(url, {
@@ -172,7 +169,7 @@ async function postData(url = '', data = {}) {
     
   }
   
-
+// getting task from here 
  async function getItemsFromAPI(){
     await fetch('https://61c4a152f1af4a0017d996eb.mockapi.io/todos')
 .then(
